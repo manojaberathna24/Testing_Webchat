@@ -3,7 +3,7 @@ class Chatbot {
     constructor() {
         // API Key - Set via admin panel or localStorage
         // Get FREE key from: https://openrouter.ai/
-        this.apiKey = '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';
+        this.apiKey = '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';
         this.model = 'meta-llama/llama-3.1-8b-instruct:free';
         // Shop assistant system prompt
         this.systemPrompt = `You are a helpful shop assistant chatbot. Answer customer questions about products, prices, availability, and recommendations.
