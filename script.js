@@ -63,8 +63,13 @@ IMPORTANT RULES:
 
     // Initialize Supabase client
     initSupabase() {
-        const url = localStorage.getItem('supabase_url');
-        const key = localStorage.getItem('supabase_key');
+        // Hardcoded Supabase config for cross-domain access
+        const SUPABASE_URL = 'https://brwgyojtthrrenhxlsio.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyd2d5b2p0dGhycmVuaHhsc2lvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1NjE4ODIsImV4cCI6MjA4MjEzNzg4Mn0.gMEw6OqFcfhLQ8dEeOHRfXE431N2ZJVi7dQdcUq1yHM';
+
+        // Use hardcoded or localStorage
+        const url = SUPABASE_URL || localStorage.getItem('supabase_url');
+        const key = SUPABASE_KEY || localStorage.getItem('supabase_key');
         if (url && key && window.supabase) {
             this.supabase = window.supabase.createClient(url, key);
             return true;
