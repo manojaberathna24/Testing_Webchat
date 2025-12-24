@@ -3,7 +3,7 @@ class Chatbot {
     constructor() {
         // API Key - Set via admin panel or localStorage
         // Get FREE key from: https://openrouter.ai/
-        this.apiKey = localStorage.getItem('openrouter_api_key') || '';
+        this.apiKey = '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';
         this.model = localStorage.getItem('chatbot_model') || 'nex-agi/deepseek-v3.1-nex-n1:free';
         // Shop assistant system prompt
         this.systemPrompt = `You are a helpful shop assistant chatbot. Answer customer questions about products, prices, availability, and recommendations.
