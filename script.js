@@ -1,11 +1,10 @@
 // Chatbot Application
 class Chatbot {
     constructor() {
-        // API Key - Set via admin panel or localStorage
-        // Get FREE key from: https://openrouter.ai/
-        this.apiKey = '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';
-        this.model = 'xiaomi/mimo-v2-flash:free';
-       
+        // API Key and Model - will be loaded from config
+        this.apiKey = '';
+        this.model = 'meta-llama/llama-3.2-3b-instruct:free';
+
         // Shop assistant system prompt
         this.systemPrompt = `You are a helpful shop assistant chatbot. Answer customer questions about products, prices, availability, and recommendations.
 
@@ -22,7 +21,44 @@ IMPORTANT RULES:
         this.initElements();
         this.initEventListeners();
         this.loadSettings();
-        this.loadProducts();
+        this.loadConfig().then(() => this.loadProducts());
+    }
+
+    // Load API config from Supabase or config.js
+    async loadConfig() {
+        // Try to load from Supabase first
+        if (this.initSupabase()) {
+            try {
+                const { data, error } = await this.supabase
+                    .from('config')
+                    .select('*');
+
+                if (!error && data) {
+                    for (const item of data) {
+                        if (item.key === 'openrouter_api_key') this.apiKey = item.value;
+                        if (item.key === 'chatbot_model') this.model = item.value;
+                    }
+                    if (this.apiKey) {
+                        console.log('Loaded API config from Supabase');
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log('Config table not found:', e.message);
+            }
+        }
+
+        // Fallback to localStorage (same domain only)
+        this.apiKey = localStorage.getItem('openrouter_api_key') || '';
+        this.model = localStorage.getItem('chatbot_model') || 'meta-llama/llama-3.2-3b-instruct:free';
+
+        // Fallback to config.js if exists
+        if (!this.apiKey && window.CHATBOT_CONFIG) {
+            this.apiKey = window.CHATBOT_CONFIG.apiKey || '';
+            this.model = window.CHATBOT_CONFIG.model || this.model;
+        }
+
+        console.log('API Key loaded:', this.apiKey ? 'Yes' : 'No');
     }
 
     // Initialize Supabase client
