@@ -4,7 +4,7 @@ class Chatbot {
         // API Key - Set via admin panel or localStorage
         // Get FREE key from: https://openrouter.ai/
         this.apiKey = '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';
-        this.model = 'meta-llama/llama-3.1-8b-instruct:free';
+        this.model = 'xiaomi/mimo-v2-flash:free';
         // Shop assistant system prompt
         this.systemPrompt = `You are a helpful shop assistant chatbot. Answer customer questions about products, prices, availability, and recommendations.
 
