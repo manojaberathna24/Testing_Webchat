@@ -478,7 +478,7 @@
     </div>
 
     <script>
-        let supabase = null;
+        let supabaseClient = null;
         let products = [];
 
         // Load saved config
@@ -501,10 +501,10 @@
             }
 
             try {
-                supabase = window.supabase.createClient(url, key);
+                supabaseClient = window.supabase.createClient(url, key);
 
                 // Test connection
-                const { data, error } = await supabase.from('products').select('count');
+                const { data, error } = await supabaseClient.from('products').select('count');
                 if (error) throw error;
 
                 // Save config
@@ -525,10 +525,10 @@
 
         // Load products from Supabase
         async function loadProducts() {
-            if (!supabase) return;
+            if (!supabaseClient) return;
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('products')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -564,7 +564,7 @@
         // Add product form
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!supabase) {
+            if (!supabaseClient) {
                 showNotification('Connect to Supabase first!', 'error');
                 return;
             }
@@ -583,10 +583,10 @@
 
         // Add single product to Supabase
         async function addProduct(product) {
-            if (!supabase) return;
+            if (!supabaseClient) return;
 
             try {
-                const { error } = await supabase.from('products').insert([product]);
+                const { error } = await supabaseClient.from('products').insert([product]);
                 if (error) throw error;
 
                 showNotification('Product added!', 'success');
@@ -598,10 +598,10 @@
 
         // Delete product
         async function deleteProduct(id) {
-            if (!supabase) return;
+            if (!supabaseClient) return;
 
             try {
-                const { error } = await supabase.from('products').delete().eq('id', id);
+                const { error } = await supabaseClient.from('products').delete().eq('id', id);
                 if (error) throw error;
 
                 showNotification('Product deleted!', 'success');
@@ -613,11 +613,11 @@
 
         // Clear all
         async function clearAll() {
-            if (!supabase) return;
+            if (!supabaseClient) return;
             if (!confirm('Delete all products?')) return;
 
             try {
-                const { error } = await supabase.from('products').delete().neq('id', 0);
+                const { error } = await supabaseClient.from('products').delete().neq('id', 0);
                 if (error) throw error;
 
                 showNotification('All products cleared!', 'success');
@@ -630,7 +630,7 @@
         // CSV handling
         async function handleCSV(input) {
             const file = input.files[0];
-            if (!file || !supabase) return;
+            if (!file || !supabaseClient) return;
 
             const reader = new FileReader();
             reader.onload = async (e) => {
@@ -658,7 +658,7 @@
         // Excel handling
         async function handleExcel(input) {
             const file = input.files[0];
-            if (!file || !supabase) return;
+            if (!file || !supabaseClient) return;
 
             const reader = new FileReader();
             reader.onload = async (e) => {
@@ -688,9 +688,9 @@
 
         // Add product without notification (for bulk import)
         async function addProductSilent(product) {
-            if (!supabase) return;
+            if (!supabaseClient) return;
             try {
-                await supabase.from('products').insert([product]);
+                await supabaseClient.from('products').insert([product]);
             } catch (e) { }
         }
 
