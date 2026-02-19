@@ -4,7 +4,6 @@ const VALID_MODELS = [
     'google/gemma-2-9b-it:free',
     'meta-llama/llama-3.2-3b-instruct:free',
     'deepseek/deepseek-chat-v3-0324:free',
-    'mistralai/mistral-7b-instruct:free',
     'microsoft/phi-3-mini-128k-instruct:free'
 ];
 const DEFAULT_MODEL = 'google/gemma-2-9b-it:free';
