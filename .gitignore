@@ -1,0 +1,3 @@
+# Ignore files with sensitive data
+config.local.js
+.env
