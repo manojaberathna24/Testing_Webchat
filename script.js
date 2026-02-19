@@ -1,12 +1,13 @@
 // Chatbot Application
 // Known working free models on OpenRouter
 const VALID_MODELS = [
+    'openrouter/free',
     'google/gemma-2-9b-it:free',
     'meta-llama/llama-3.2-3b-instruct:free',
     'deepseek/deepseek-chat-v3-0324:free',
     'microsoft/phi-3-mini-128k-instruct:free'
 ];
-const DEFAULT_MODEL = 'google/gemma-2-9b-it:free';
+const DEFAULT_MODEL = 'openrouter/free';
 
 class Chatbot {
     constructor() {
@@ -299,6 +300,24 @@ IMPORTANT RULES:
     }
 
     async getAIResponse(userMessage, context) {
+        try {
+            // Try with selected model first
+            return await this.fetchCompletions(this.model, userMessage, context);
+        } catch (error) {
+            // If it fails and we're not already using the default, try the default (openrouter/free)
+            if (this.model !== DEFAULT_MODEL) {
+                console.log(`Model ${this.model} failed, falling back to ${DEFAULT_MODEL}`);
+                try {
+                    return await this.fetchCompletions(DEFAULT_MODEL, userMessage, context);
+                } catch (retryError) {
+                    throw retryError;
+                }
+            }
+            throw error;
+        }
+    }
+
+    async fetchCompletions(modelId, userMessage, context) {
         const messages = [
             {
                 role: 'system',
@@ -333,7 +352,7 @@ IMPORTANT RULES:
                 'X-Title': 'AI Chatbot'
             },
             body: JSON.stringify({
-                model: this.model,
+                model: modelId,
                 messages: messages,
                 temperature: 0.7,
                 max_tokens: 1000
